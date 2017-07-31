@@ -87,6 +87,7 @@ public class TimerFragment extends Fragment implements
     private boolean ringerModeChanged = false;
     private boolean wifiChanged = false;
     private static ChangeToolbarColor listener;
+    private boolean screenKeptOn = false;
 
     public interface ChangeToolbarColor{
         void onTimerModeChanged(TimerMode mTimerMode);
@@ -158,6 +159,14 @@ public class TimerFragment extends Fragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(mIsTimerActive && mTimerMode == WORK){
+            if(ringerModeChanged){
+                restoreSound();
+            }
+            if(wifiChanged){
+                restoreWifi();
+            }
+        }
         sPref.unregisterOnSharedPreferenceChangeListener(this);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
     }
@@ -224,6 +233,10 @@ public class TimerFragment extends Fragment implements
         mButtonResume.setEnabled(false);
         mButtonStop.setVisibility(View.INVISIBLE);
         mButtonStop.setEnabled(false);
+        if(screenKeptOn){
+            clearScreenOnFlag();
+            screenKeptOn = false;
+        }
     }
 
     private void setButtonListeners() {
@@ -280,6 +293,7 @@ public class TimerFragment extends Fragment implements
                 }
                 if(appPreferences.keepScreenON()){
                     getActivity().getWindow().addFlags(FLAG_KEEP_SCREEN_ON);
+                    screenKeptOn = true;
                 }
                 break;
             case BREAK:
@@ -288,7 +302,6 @@ public class TimerFragment extends Fragment implements
             case LONG_BREAK:
                 BusProvider.getInstance().post(new StartTimerEvent(timerMode));
                 break;
-
         }
     }
 
@@ -352,6 +365,10 @@ public class TimerFragment extends Fragment implements
             wifiChanged = true;
             wifiManager.setWifiEnabled(false);
         }
+    }
+
+    private void clearScreenOnFlag() {
+        getActivity().getWindow().clearFlags(FLAG_KEEP_SCREEN_ON);
     }
 
     @Subscribe
@@ -439,9 +456,6 @@ public class TimerFragment extends Fragment implements
         switch (timerMode){
             case WORK:
                 TimerProperties.getInstance().incrementNumberOfSessions();
-                if(appPreferences.keepScreenON()){
-                    getActivity().getWindow().clearFlags(FLAG_KEEP_SCREEN_ON);
-                }
                 showBreakDialog();
                 break;
             case BREAK:

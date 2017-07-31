@@ -63,5 +63,9 @@
 
     <!-- About Activity -->
     <string name="title_activity_about">About</string>
+    <string name="version">Version 1.0.0</string>
+    <string name="developer">Developer</string>
+    <string name="developer_name">Swapnil Madavi</string>
+    <string name="licenses_heading">Open Source Licenses</string>
 
 </resources>
