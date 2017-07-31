@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="4dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="@dimen/horizontal_margin_small"
+    android:paddingRight="@dimen/horizontal_margin_small"
+    android:background="?android:attr/selectableItemBackground"
+    android:hapticFeedbackEnabled="true">
+
+    <CheckBox
+        android:id="@+id/checkbox_task_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toRightOf="@id/checkbox_task_status"
+        android:layout_toEndOf="@id/checkbox_task_status"
+        android:paddingLeft="@dimen/horizontal_margin_small"
+        android:paddingRight="@dimen/horizontal_margin_small">
+
+        <TextView
+            android:id="@+id/text_task_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimaryText" />
+
+        <TextView
+            android:id="@+id/text_due_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textSize="14sp"
+            android:textColor="@color/colorAccent"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_num_sessions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/vertical_margin_small"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:paddingLeft="@dimen/horizontal_margin_small"
+        android:paddingRight="@dimen/horizontal_margin_small"
+        android:textSize="14sp"
+        android:textColor="@color/colorSecondaryText"/>
+
+</RelativeLayout>

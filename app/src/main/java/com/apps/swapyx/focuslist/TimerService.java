@@ -1,0 +1,280 @@
+package com.apps.swapyx.focuslist;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
+
+import com.apps.swapyx.focuslist.Events.CountdownEvent;
+import com.apps.swapyx.focuslist.Events.PauseTimerEvent;
+import com.apps.swapyx.focuslist.Events.StartForegroundEvent;
+import com.apps.swapyx.focuslist.Events.StartTimerEvent;
+import com.apps.swapyx.focuslist.Events.StopTimerEvent;
+import com.apps.swapyx.focuslist.Utils.AppNotifications;
+import com.apps.swapyx.focuslist.Utils.AppPreferences;
+import com.apps.swapyx.focuslist.Utils.BusProvider;
+import com.apps.swapyx.focuslist.Utils.TimerProperties;
+import com.squareup.otto.Subscribe;
+
+import java.util.concurrent.TimeUnit;
+
+import static android.app.AlarmManager.ELAPSED_REALTIME_WAKEUP;
+import static com.apps.swapyx.focuslist.TimerStatus.PAUSED;
+import static com.apps.swapyx.focuslist.TimerStatus.RUNNING;
+import static com.apps.swapyx.focuslist.TimerStatus.STOPPED;
+
+
+/**
+ * Created by SwapyX on 13-06-2017.
+ */
+
+public class TimerService extends Service{
+    private static final String TAG = TimerService.class.getSimpleName();
+    private static final int MESSAGE_TIMER_UPDATE = 0 ;
+    private static final int NOTIFICATION_ID = 1;
+    public static final String ACTION_COUNTDOWN_FINISHED =
+            "com.apps.swapyx.focuslist.ACTION_COUNTDOWN_FINISHED";
+    public final static String ACTION_TIMERSERVICE_ALARM =
+            "com.apps.swapyx.focuslist.ACTION_TIMERSERVICE_ALARM";
+    public static final String ACTION_WORK_MODE_STOPPED =
+            "com.apps.swapyx.focuslist.ACTION_WORK_MODE_STOPPED";
+    public static final String SECONDS_WORKED = "secondsWorked";
+
+
+    private long countdownDuration;
+    private long timeRemainingOnPause;
+    private long timeRemainingOnStop;
+
+    // Load Settings
+    private AppPreferences appPreferences;
+    private SharedPreferences sPref;
+
+    private LocalBroadcastManager mBroadcastManager;
+    private BroadcastReceiver mAlarmReceiver;
+    private AlarmManager mAlarmManager;
+
+
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == MESSAGE_TIMER_UPDATE){
+                int remainingTime = getRemainingTime();
+                if(remainingTime > 0){
+                    BusProvider.getInstance().post(new CountdownEvent(remainingTime));
+                    mHandler.sendEmptyMessageDelayed(MESSAGE_TIMER_UPDATE,1000);
+                }else{
+                    sendFinishedMessage();
+                    stopTimer();
+                }
+            }
+        }
+    };
+
+    @Override
+    public void onCreate() {
+        Log.d(TAG, "Service onCreate");
+        BusProvider.getInstance().register(this);
+        mBroadcastManager = LocalBroadcastManager.getInstance(this);
+        sPref = PreferenceManager.getDefaultSharedPreferences(this);
+        appPreferences = new AppPreferences(sPref);
+        TimerProperties.getInstance().setTimerStatus(STOPPED);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "Service Started");
+        return Service.START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "Service onDestroy");
+        BusProvider.getInstance().unregister(this);
+        try {
+            this.unregisterReceiver(mAlarmReceiver);
+        } catch(IllegalArgumentException e) {
+            Log.d(TAG, "AlarmReceiver is already unregistered.");
+        }
+        mHandler.removeMessages(MESSAGE_TIMER_UPDATE);
+        /*if(StartTimerEvent.timerMode == TimerMode.WORK){
+            SharedPreferences.Editor ed = sPref.edit();
+            int secondsWorkedBeforeDestroyed = 0;
+            if(TimerProperties.getInstance().getTimerStatus() == PAUSED){
+               secondsWorkedBeforeDestroyed = (int)TimeUnit.MILLISECONDS.toSeconds(timeRemainingOnPause);
+            }else if(TimerProperties.getInstance().getTimerStatus() == RUNNING){
+                secondsWorkedBeforeDestroyed = getRemainingTime();
+            }
+            if(secondsWorkedBeforeDestroyed>0){
+                ed.putInt("secondsWorkedBeforeDestroyed", secondsWorkedBeforeDestroyed);
+                ed.commit();
+            }
+        }*/
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Subscribe
+    public void onStartCommand(StartTimerEvent event){
+        if (TimerProperties.getInstance().getTimerStatus() == PAUSED){
+            resumeTimer();
+        }else{
+            startTimer(StartTimerEvent.timerMode);
+        }
+    }
+
+    @Subscribe
+    public void onPauseCommand(PauseTimerEvent event){
+        pauseTimer();
+    }
+
+    @Subscribe
+    public void onStopCommand(StopTimerEvent event){
+        stopTimer();
+        if (StartTimerEvent.timerMode == TimerMode.WORK){
+            Intent workStoppedIntent = new Intent(ACTION_WORK_MODE_STOPPED);
+            int secondsWorked = (int) (TimeUnit.MINUTES.toSeconds(appPreferences.getWorkDuration())
+                    - TimeUnit.MILLISECONDS.toSeconds(timeRemainingOnStop));
+            workStoppedIntent.putExtra(SECONDS_WORKED, secondsWorked);
+            mBroadcastManager.sendBroadcast(workStoppedIntent);
+        }
+    }
+
+    private void startTimer(TimerMode timerMode) {
+        TimerProperties.getInstance().setTimerStatus(RUNNING);
+        countdownDuration = calculateCountdownDuration(timerMode);
+        mHandler.sendEmptyMessage(MESSAGE_TIMER_UPDATE);
+        Log.d("TimerService","Timer Start");
+    }
+
+    private void stopTimer() {
+        if(TimerProperties.getInstance().getTimerStatus() == PAUSED){
+            timeRemainingOnStop = timeRemainingOnPause;
+        }else {
+            timeRemainingOnStop = TimeUnit.SECONDS.toMillis(getRemainingTime());
+        }
+        TimerProperties.getInstance().setTimerStatus(STOPPED);
+        mHandler.removeMessages(MESSAGE_TIMER_UPDATE);
+        Log.d("TimerService","Timer Stopped");
+    }
+
+    public void pauseTimer() {
+        timeRemainingOnPause = TimeUnit.SECONDS.toMillis(getRemainingTime());
+        mHandler.removeMessages(MESSAGE_TIMER_UPDATE);
+        TimerProperties.getInstance().setTimerStatus(PAUSED);
+        Log.d("TimerService","Timer Paused");
+    }
+
+    public void resumeTimer() {
+        TimerProperties.getInstance().setTimerStatus(RUNNING);
+        countdownDuration = timeRemainingOnPause + SystemClock.elapsedRealtime();
+        mHandler.sendEmptyMessage(MESSAGE_TIMER_UPDATE);
+        Log.d("TimerService","Timer Resume");
+    }
+
+    private long calculateCountdownDuration(TimerMode timerMode) {
+        long currentTime = SystemClock.elapsedRealtime();
+        switch (timerMode){
+            case WORK:
+                return currentTime + TimeUnit.MINUTES.toMillis(appPreferences.getWorkDuration());
+            case BREAK:
+                return currentTime + TimeUnit.MINUTES.toMillis(appPreferences.getBreakDuration());
+            case LONG_BREAK:
+                return currentTime + TimeUnit.MINUTES.toMillis(appPreferences.getLongBreakDuration());
+            default:
+                throw new IllegalStateException("Invalid Mode");
+        }
+
+    }
+
+    private int getRemainingTime(){
+        return (int) TimeUnit.MILLISECONDS.toSeconds(countdownDuration - SystemClock.elapsedRealtime());
+    }
+
+    private void sendFinishedMessage() {
+        Intent finishedIntent = new Intent(ACTION_COUNTDOWN_FINISHED);
+        mBroadcastManager.sendBroadcast(finishedIntent);
+
+        if(StartTimerEvent.timerMode == TimerMode.WORK){
+            Intent workFinishedIntent = new Intent(ACTION_WORK_MODE_STOPPED);
+            int secondsWorked = (int) TimeUnit.MINUTES.toSeconds(appPreferences.getWorkDuration());
+            workFinishedIntent.putExtra(SECONDS_WORKED,secondsWorked);
+            mBroadcastManager.sendBroadcast(workFinishedIntent);
+        }
+    }
+
+    @Subscribe
+    public void onForegroundCommand(StartForegroundEvent event){
+        if(StartForegroundEvent.startForeground){
+            startForeground(NOTIFICATION_ID, AppNotifications.createForegroundNotifications(this) );
+            if(TimerProperties.getInstance().isTimerRunning()){
+                setAlarm();
+                mHandler.removeMessages(MESSAGE_TIMER_UPDATE);
+            }
+            Log.d("TimerService","Foreground");
+        }else{
+            stopForeground(true);
+            if (TimerProperties.getInstance().isTimerRunning()){
+                cancelAlarm();
+                mHandler.sendEmptyMessage(MESSAGE_TIMER_UPDATE);
+            }
+            Log.d("TimerService","Background");
+        }
+    }
+
+    private void setAlarm() {
+        mAlarmReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                sendFinishedMessage();
+                stopForeground(true);
+                TimerProperties.getInstance().setTimerStatus(STOPPED);
+                Log.d(TAG, "Countdown finished");
+                unregisterReceiver(mAlarmReceiver);
+            }
+        };
+
+        IntentFilter filter=new IntentFilter(ACTION_TIMERSERVICE_ALARM);
+        registerReceiver(mAlarmReceiver, filter);
+
+        mAlarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(ACTION_TIMERSERVICE_ALARM);
+        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        long wakeUpTime = TimeUnit.SECONDS.toMillis(getRemainingTime()) + SystemClock.elapsedRealtime();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mAlarmManager.setExact(ELAPSED_REALTIME_WAKEUP, wakeUpTime, sender);
+        } else {
+            mAlarmManager.set(ELAPSED_REALTIME_WAKEUP, wakeUpTime, sender);
+        }
+        Log.d(TAG,"Alarm Set");
+
+    }
+
+    private void cancelAlarm() {
+        Intent intent = new Intent(ACTION_TIMERSERVICE_ALARM);
+        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        mAlarmManager.cancel(sender);
+        Log.d(TAG,"Alarm Cancelled");
+        try {
+            this.unregisterReceiver(mAlarmReceiver);
+        } catch(IllegalArgumentException e) {
+            Log.d(TAG, "AlarmReceiver is already unregistered.");
+        }
+    }
+}

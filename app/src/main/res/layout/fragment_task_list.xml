@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.MainActivity">
+
+    <TextView
+        android:id="@+id/text_empty_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tap_to_add_tasks"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_main"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/vertical_margin_small"
+        android:paddingBottom="@dimen/vertical_margin_small" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/vertical_margin"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:elevation="6dp"
+        app:srcCompat="@drawable/ic_add_white_24dp" />
+
+</android.support.design.widget.CoordinatorLayout>

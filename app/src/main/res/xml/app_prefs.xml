@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="@string/category_timer" >
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:key="@string/key_work"
+            android:title="@string/label_work"
+            android:defaultValue="25"
+
+            app:msbp_dialogEnabled="true"
+            app:msbp_minValue="1"
+            app:msbp_maxValue="60"
+            app:msbp_interval="1"
+            app:msbp_measurementUnit="@string/minutes"/>
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:key="@string/key_break"
+            android:title="@string/label_break"
+            android:defaultValue="5"
+
+            app:msbp_dialogEnabled="true"
+            app:msbp_minValue="1"
+            app:msbp_maxValue="15"
+            app:msbp_interval="1"
+            app:msbp_measurementUnit="@string/minutes"/>
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:key="@string/key_longBreak"
+            android:title="@string/label_longBreak"
+            android:defaultValue="15"
+
+            app:msbp_dialogEnabled="true"
+            app:msbp_minValue="1"
+            app:msbp_maxValue="30"
+            app:msbp_interval="1"
+            app:msbp_measurementUnit="@string/minutes" />
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:key="@string/key_sessions"
+            android:title="@string/label_sessions"
+            android:defaultValue="4"
+
+            app:msbp_dialogEnabled="true"
+            app:msbp_minValue="2"
+            app:msbp_maxValue="8"
+            app:msbp_interval="1"
+            app:msbp_measurementUnit="@string/sessions"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/category_notification">
+        <CheckBoxPreference
+            android:key="@string/key_sound"
+            android:title="@string/label_sound"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:key="@string/key_vibrate"
+            android:title="@string/label_vibrate"
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/category_work">
+        <CheckBoxPreference
+            android:key="@string/key_ringerMode"
+            android:title="@string/label_silent"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:key="@string/key_wifi"
+            android:title="@string/label_wifi"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:key="@string/key_screen_on"
+            android:title="@string/label_screen_on"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

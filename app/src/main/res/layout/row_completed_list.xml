@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="4dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="@dimen/horizontal_margin_small"
+    android:paddingRight="@dimen/horizontal_margin_small"
+    android:background="?android:attr/selectableItemBackground"
+    android:hapticFeedbackEnabled="true">
+
+    <CheckBox
+        android:id="@+id/checkbox_completedTask_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/text_completed_taskName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/horizontal_margin_small"
+        android:paddingRight="@dimen/horizontal_margin_small"
+        android:ellipsize="end"
+        android:lines="1"
+        android:inputType=""
+        android:textSize="16sp"
+        android:layout_gravity="center_vertical"/>
+
+</LinearLayout>
