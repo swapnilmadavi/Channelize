@@ -23,7 +23,6 @@ public class AppPreferences {
     }
 
     public int getWorkDuration() {
-        //Log.i(TAG,"in getWorkDuration");
         return sharedPreferences.getInt(WORK,25);
     }
 
@@ -40,7 +39,7 @@ public class AppPreferences {
     }
 
     public boolean getDisableSoundAndVibration() {
-        return sharedPreferences.getBoolean(DISABLE_SOUND_VIBRATION,true);
+        return sharedPreferences.getBoolean(DISABLE_SOUND_VIBRATION,false);
     }
 
     public boolean getDisableWifi() {

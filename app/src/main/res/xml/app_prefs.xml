@@ -67,7 +67,7 @@
         <CheckBoxPreference
             android:key="@string/key_ringerMode"
             android:title="@string/label_silent"
-            android:defaultValue="true"/>
+            android:defaultValue="false"/>
         <CheckBoxPreference
             android:key="@string/key_wifi"
             android:title="@string/label_wifi"
