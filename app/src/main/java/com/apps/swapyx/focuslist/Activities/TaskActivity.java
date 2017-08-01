@@ -76,7 +76,7 @@ public class TaskActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mEditTaskName = (TextInputEditText)findViewById(R.id.edit_task_name);
-        mEditTaskDueDate = (TextInputEditText)findViewById(R.id.edit_datepicker);
+        mEditTaskDueDate = (TextInputEditText)findViewById(R.id.edit_datePicker);
         mEditTaskNote = (TextInputEditText)findViewById(R.id.edit_note);
         mImageViewClearDate = (ImageView) findViewById(R.id.image_view_clear);
 
@@ -123,7 +123,7 @@ public class TaskActivity extends AppCompatActivity {
 
             mEditTaskName.setText(originalName);
             if(originalDueDate.equals("")){
-                mEditTaskDueDate.setText(R.string.string_none);
+                mEditTaskDueDate.setText(R.string.none);
             }else{
                 Date currDate = null;
                 try {
@@ -223,7 +223,7 @@ public class TaskActivity extends AppCompatActivity {
             mEditTaskDueDate.setTextColor(BLACK);
         }
         if(date.equals(today)){
-            mEditTaskDueDate.setText(R.string.string_today);
+            mEditTaskDueDate.setText(R.string.today);
         }else{
             mEditTaskDueDate.setText(simpleDateFormat.format(date));
         }

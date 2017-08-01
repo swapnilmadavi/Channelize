@@ -66,7 +66,7 @@ public class TimerService extends Service{
     private BroadcastReceiver mAlarmReceiver;
     private AlarmManager mAlarmManager;
 
-
+    //handler to post remaining time every second
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -110,19 +110,23 @@ public class TimerService extends Service{
             Log.d(TAG, "AlarmReceiver is already unregistered.");
         }
         mHandler.removeMessages(MESSAGE_TIMER_UPDATE);
-        /*if(StartTimerEvent.timerMode == TimerMode.WORK){
-            SharedPreferences.Editor ed = sPref.edit();
+
+        //save the seconds worked if the app is closed during an ongoing WORK mode
+        TimerStatus status = TimerProperties.getInstance().getTimerStatus();
+        if(StartTimerEvent.timerMode == TimerMode.WORK && status != STOPPED){
             int secondsWorkedBeforeDestroyed = 0;
-            if(TimerProperties.getInstance().getTimerStatus() == PAUSED){
-               secondsWorkedBeforeDestroyed = (int)TimeUnit.MILLISECONDS.toSeconds(timeRemainingOnPause);
-            }else if(TimerProperties.getInstance().getTimerStatus() == RUNNING){
-                secondsWorkedBeforeDestroyed = getRemainingTime();
+            int totalSeconds = (int) TimeUnit.MINUTES.toSeconds(appPreferences.getWorkDuration());
+            if(status == PAUSED){
+               secondsWorkedBeforeDestroyed = totalSeconds - (int)TimeUnit.MILLISECONDS.toSeconds(timeRemainingOnPause);
+            }else if(status == RUNNING){
+                secondsWorkedBeforeDestroyed = totalSeconds - getRemainingTime();
             }
+            SharedPreferences.Editor ed = sPref.edit();
             if(secondsWorkedBeforeDestroyed>0){
                 ed.putInt("secondsWorkedBeforeDestroyed", secondsWorkedBeforeDestroyed);
                 ed.commit();
             }
-        }*/
+        }
     }
 
     @Override
@@ -148,6 +152,7 @@ public class TimerService extends Service{
     public void onStopCommand(StopTimerEvent event){
         stopTimer();
         if (StartTimerEvent.timerMode == TimerMode.WORK){
+            //send seconds worked to TaskListFragment if work mode was stopped
             Intent workStoppedIntent = new Intent(ACTION_WORK_MODE_STOPPED);
             int secondsWorked = (int) (TimeUnit.MINUTES.toSeconds(appPreferences.getWorkDuration())
                     - TimeUnit.MILLISECONDS.toSeconds(timeRemainingOnStop));
@@ -212,6 +217,7 @@ public class TimerService extends Service{
         mBroadcastManager.sendBroadcast(finishedIntent);
 
         if(StartTimerEvent.timerMode == TimerMode.WORK){
+            //send seconds worked to TaskListFragment on work mode completion
             Intent workFinishedIntent = new Intent(ACTION_WORK_MODE_STOPPED);
             int secondsWorked = (int) TimeUnit.MINUTES.toSeconds(appPreferences.getWorkDuration());
             workFinishedIntent.putExtra(SECONDS_WORKED,secondsWorked);
@@ -238,6 +244,8 @@ public class TimerService extends Service{
         }
     }
 
+    /*set an alarm if a session is active and the app if sent to background.
+     And on receiving alarm send finished message*/
     private void setAlarm() {
         mAlarmReceiver = new BroadcastReceiver() {
             @Override
@@ -266,6 +274,7 @@ public class TimerService extends Service{
 
     }
 
+    //cancel alarm if service is sent to background on resuming app
     private void cancelAlarm() {
         Intent intent = new Intent(ACTION_TIMERSERVICE_ALARM);
         PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);

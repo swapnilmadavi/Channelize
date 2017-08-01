@@ -13,8 +13,8 @@ import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.apps.swapyx.focuslist.Activities.AboutActivity;
 import com.apps.swapyx.focuslist.Events.CurrentTaskCheckedEvent;
 import com.apps.swapyx.focuslist.Events.CountdownEvent;
+import com.apps.swapyx.focuslist.Events.FocusTaskChangedEvent;
 import com.apps.swapyx.focuslist.Events.PauseTimerEvent;
 import com.apps.swapyx.focuslist.Events.StartTimerEvent;
 import com.apps.swapyx.focuslist.Events.StopTimerEvent;
@@ -39,6 +40,7 @@ import com.apps.swapyx.focuslist.R;
 import com.apps.swapyx.focuslist.Activities.SettingsActivity;
 import com.apps.swapyx.focuslist.TimerMode;
 import com.apps.swapyx.focuslist.TimerService;
+import com.apps.swapyx.focuslist.ToDoItem;
 import com.apps.swapyx.focuslist.Utils.AppNotifications;
 import com.apps.swapyx.focuslist.Utils.AppPreferences;
 import com.apps.swapyx.focuslist.Utils.BusProvider;
@@ -142,7 +144,6 @@ public class TimerFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG,"onResume");
-        //removeCompletionNotification();
     }
 
     @Override
@@ -154,6 +155,11 @@ public class TimerFragment extends Fragment implements
     public void onStop() {
         super.onStop();
         BusProvider.getInstance().unregister(this);
+        if(mTimerMode == WORK && mIsTimerActive && FocusTaskChangedEvent.currentFocusTask.getToDoId()!=99999){
+            SharedPreferences.Editor ed = sPref.edit();
+            ed.putBoolean("AppDestroyedDuringWork", true);
+            ed.commit();
+        }
     }
 
     @Override
@@ -195,6 +201,19 @@ public class TimerFragment extends Fragment implements
             Intent aboutIntent = new Intent(getActivity(), AboutActivity.class);
             startActivity(aboutIntent);
             return true;
+        }else if (id == R.id.action_free_task){
+            // Set Free task as current task
+            if(!mIsTimerActive){
+                BusProvider.getInstance()
+                        .post(new FocusTaskChangedEvent(new ToDoItem(99999,"Free task")));
+                Log.d("Free task","posted");
+            }else {
+                Snackbar snackbar = Snackbar
+                        .make(view, R.string.stop_ongoing_task, Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
+
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -215,7 +234,7 @@ public class TimerFragment extends Fragment implements
 
     private void setScreenElements() {
         mCircularProgressBar = (HoloCircularProgressBar) view.findViewById(R.id.circular_progressBar);
-        mTextViewTimer = (TextView)view.findViewById(R.id.textView_time);
+        mTextViewTimer = (TextView)view.findViewById(R.id.text_timer);
         mButtonStart = (Button)view.findViewById(R.id.button_start);
         mButtonPause = (Button)view.findViewById(R.id.button_pause);
         mButtonResume = (Button)view.findViewById(R.id.button_resume);
@@ -393,7 +412,7 @@ public class TimerFragment extends Fragment implements
         mButtonResume.setEnabled(false);
         mButtonStop.setVisibility(View.INVISIBLE);
         mButtonStop.setEnabled(false);
-        mButtonPause.setText(R.string.cancel);
+        mButtonPause.setText(android.R.string.cancel);
         mButtonPause.setVisibility(View.VISIBLE);
         mButtonPause.setEnabled(true);
     }
@@ -471,9 +490,9 @@ public class TimerFragment extends Fragment implements
 
     private void showWorkDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Break Over!")
-                .setMessage("Get Back To Work Mode")
-                .setPositiveButton("Resume Task", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.break_over)
+                .setMessage(R.string.resume_work)
+                .setPositiveButton(R.string.resume, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         removeCompletionNotification();
@@ -486,7 +505,7 @@ public class TimerFragment extends Fragment implements
                         startTimer(WORK);
                     }
                 })
-                .setNeutralButton("CLOSE", new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         removeCompletionNotification();
@@ -508,12 +527,12 @@ public class TimerFragment extends Fragment implements
 
     private void showBreakDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Time's Up!");
+        builder.setTitle(R.string.work_over);
 
         if((TimerProperties.getInstance().getNumberOfSessions() %
                 appPreferences.getSessionsBeforeLongBreak()) == 0){
-            builder.setMessage("Take a Long Break!")
-                    .setPositiveButton("START LONG BREAK", new DialogInterface.OnClickListener() {
+            builder.setMessage(R.string.start_long_break)
+                    .setPositiveButton(R.string.start, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             removeCompletionNotification();
@@ -523,8 +542,8 @@ public class TimerFragment extends Fragment implements
                         }
                     });
         }else {
-            builder.setMessage("Take a Short Break!")
-                    .setPositiveButton("START", new DialogInterface.OnClickListener() {
+            builder.setMessage(R.string.start_short_break)
+                    .setPositiveButton(R.string.start, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             removeCompletionNotification();
@@ -535,14 +554,14 @@ public class TimerFragment extends Fragment implements
                     });
         }
 
-        builder.setNegativeButton("SKIP", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.skip, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeCompletionNotification();
                 startTimer(WORK);
             }
         })
-                .setNeutralButton("CLOSE", new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         removeCompletionNotification();

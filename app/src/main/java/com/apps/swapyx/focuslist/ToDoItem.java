@@ -16,10 +16,6 @@ public class ToDoItem {
 
     }
 
-    public ToDoItem(String s) {
-        this.toDoName = s;
-    }
-
     public ToDoItem(long id, String s) {
         this.toDoId = id;
         this.toDoName = s;

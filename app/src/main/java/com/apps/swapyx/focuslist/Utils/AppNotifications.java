@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.apps.swapyx.focuslist.Activities.MainActivity;
+import com.apps.swapyx.focuslist.Events.FocusTaskChangedEvent;
 import com.apps.swapyx.focuslist.R;
 import com.apps.swapyx.focuslist.TimerMode;
 
@@ -27,7 +28,7 @@ public class AppNotifications {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText("Active Session in progress");
+                .setContentText(FocusTaskChangedEvent.currentFocusTask.getToDoName());
 
         Intent resultIntent = new Intent(context, MainActivity.class);
         PendingIntent resultPendingIntent =
@@ -41,8 +42,8 @@ public class AppNotifications {
     public static Notification createFinishNotification(Context context, TimerMode timerMode, boolean sound, boolean vibrate) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Countdown finished")
-                .setContentText(getNotificationText(timerMode))
+                .setContentTitle(getNotificationContentTitle(timerMode,context))
+                .setContentText(getNotificationContentText(timerMode,context))
                 .setAutoCancel(true);
         if(sound){
             Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -65,11 +66,25 @@ public class AppNotifications {
         return mBuilder.build();
     }
 
-    private static CharSequence getNotificationText(TimerMode timerMode) {
+    private static CharSequence getNotificationContentTitle(TimerMode timerMode, Context context) {
+        CharSequence message;
         if(timerMode == TimerMode.WORK){
-            return "Take a break";
+            message =  context.getString(R.string.work_over);
         }else{
-            return "Let's get back to work";
+            message = context.getString(R.string.break_over);
         }
+
+        return message;
+    }
+
+    private static CharSequence getNotificationContentText(TimerMode timerMode, Context context) {
+        CharSequence message;
+        if(timerMode == TimerMode.WORK){
+            message =  context.getString(R.string.take_a_break);
+        }else{
+            message = context.getString(R.string.resume_work);
+        }
+
+        return message;
     }
 }

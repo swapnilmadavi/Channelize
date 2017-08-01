@@ -14,4 +14,6 @@
     <color name="colorBreakDark">#f57C00</color>
     <color name="colorCardBackground">#fafafa</color>
     <color name="colorBackground">#eeeeee</color>
+    <color name="colorButtonResume">#00e676</color>
+    <color name="colorButtonStop">#ef5350</color>
 </resources>

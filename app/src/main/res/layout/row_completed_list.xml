@@ -4,10 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="4dp"
-    android:paddingBottom="8dp"
+    android:paddingBottom="@dimen/vertical_margin_small"
     android:paddingLeft="@dimen/horizontal_margin_small"
     android:paddingRight="@dimen/horizontal_margin_small"
-    android:background="?android:attr/selectableItemBackground"
     android:hapticFeedbackEnabled="true">
 
     <CheckBox
@@ -24,8 +23,7 @@
         android:paddingRight="@dimen/horizontal_margin_small"
         android:ellipsize="end"
         android:lines="1"
-        android:inputType=""
-        android:textSize="16sp"
+        android:textSize="@dimen/primary_text_size"
         android:layout_gravity="center_vertical"/>
 
 </LinearLayout>

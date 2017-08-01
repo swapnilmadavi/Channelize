@@ -4,10 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="4dp"
-    android:paddingBottom="8dp"
+    android:paddingBottom="@dimen/vertical_margin_small"
     android:paddingLeft="@dimen/horizontal_margin_small"
     android:paddingRight="@dimen/horizontal_margin_small"
-    android:background="?android:attr/selectableItemBackground"
     android:hapticFeedbackEnabled="true">
 
     <CheckBox
@@ -30,7 +29,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:textSize="16sp"
+            android:textSize="@dimen/primary_text_size"
             android:textColor="@color/colorPrimaryText" />
 
         <TextView
@@ -38,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
-            android:textSize="14sp"
+            android:textSize="@dimen/secondary_text_size"
             android:textColor="@color/colorAccent"/>
 
     </LinearLayout>

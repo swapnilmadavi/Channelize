@@ -47,12 +47,12 @@
            android:orientation="horizontal">
 
            <android.support.design.widget.TextInputLayout
-               android:layout_width="match_parent"
+               android:layout_width="0dp"
                android:layout_height="wrap_content"
                android:layout_weight="1">
 
                <android.support.design.widget.TextInputEditText
-                   android:id="@+id/edit_datepicker"
+                   android:id="@+id/edit_datePicker"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:hint="@string/label_due_date"

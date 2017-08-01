@@ -6,4 +6,10 @@
     <dimen name="vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="circular_pb_size">230dp</dimen>
+    <dimen name="primary_text_size">16sp</dimen>
+    <dimen name="secondary_text_size">14sp</dimen>
+    <dimen name="about_card_padding">16dp</dimen>
+    <dimen name="timer_text_size">40sp</dimen>
+    <dimen name="timer_button_size">150dp</dimen>
+    <dimen name="timer_buttons_margin">44dp</dimen>
 </resources>

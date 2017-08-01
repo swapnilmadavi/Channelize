@@ -2,9 +2,8 @@ package com.apps.swapyx.focuslist.Utils;
 
 import com.apps.swapyx.focuslist.TimerStatus;
 
-/**
- * Created by SwapyX on 29-06-2017.
- */
+/*A singleton class to hold the current properties of the timer including
+    isTimerRunning, status, number of sessions.*/
 
 public final class TimerProperties {
     private static TimerProperties timerProperties;
@@ -14,7 +13,7 @@ public final class TimerProperties {
     private NumberOfSessionsChangeListener listener;
 
     public interface NumberOfSessionsChangeListener {
-        public void onChange(int numberOfSessions);
+        void onChange(int numberOfSessions);
     }
 
     public static TimerProperties getInstance() {
@@ -52,6 +51,7 @@ public final class TimerProperties {
 
     public void initNumberOfSessions(){
         this.mNumberOfSessions = 0;
+        listener.onChange(this.mNumberOfSessions);
     }
 
     public void incrementNumberOfSessions(){

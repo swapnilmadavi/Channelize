@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Focuslist</string>
+    <string name="app_name">My Focuslist</string>
 
     <!-- TaskActivity Strings -->
     <string name="title_activity_task">TaskActivity</string>
@@ -7,31 +7,47 @@
     <string name="hint_note">Note</string>
     <string name="label_due_date">Due date</string>
     <string name="new_task">New task</string>
-    <string name="string_save">Save</string>
+    <string name="save">Save</string>
+    <string name="no_change">No changes made</string>
 
     <!-- TaskList Strings -->
-    <string name="string_today">Today</string>
+    <string name="today">Today</string>
     <string name="no_due_date">No due date</string>
     <string name="edit_task">Edit task</string>
-    <string name="string_none">None</string>
+    <string name="none">None</string>
     <string name="tap_to_add_tasks">Tap \'+\' to add tasks</string>
-    <string name="title_activity_completed_tasks">CompletedTasksActivity</string>
+    <string name="title_activity_completed_tasks">Completed tasks</string>
     <string name="no_tasks">No tasks</string>
-    <string name="string_view_completed">View completed tasks</string>
-    <string name="completed_tasks">Completed tasks</string>
+    <string name="view_completed">View completed tasks</string>
+    <string name="stop_ongoing_task">Stop the ongoing task first</string>
+    <string name="already_selected">Task already selected</string>
+    <string name="task_deleted">Task deleted</string>
+    <string name="delete_task">Delete Task?</string>
+    <string name="delete">delete</string>
+    <string name="task_updated">Task updated</string>
+    <string name="task_added">Task added</string>
+    <string name="cannot_edit">Cannot edit active task</string>
+    <string name="cannot_delete">Cannot delete active task</string>
 
     <!-- Timer Strings -->
-    <string name="title_settings">Settings</string>
     <string name="start">start</string>
     <string name="pause">pause</string>
     <string name="resume">resume</string>
     <string name="stop">stop</string>
+    <string name="close">close</string>
+    <string name="skip">skip</string>
     <string name="press_exit">Press again to exit</string>
-    <string name="cancel">cancel</string>
     <string name="free_task">Free task</string>
-
+    <string name="break_over">Break over</string>
+    <string name="resume_work">Resume work?</string>
+    <string name="take_a_break">Take a break?</string>
+    <string name="work_over">Focus complete</string>
+    <string name="work_session_complete">Work session complete</string>
+    <string name="start_long_break">Start long break?</string>
+    <string name="start_short_break">Start short break?</string>
 
     <!-- Preference Names -->
+    <string name="title_settings">Settings</string>
     <string name="category_timer">Timer durations</string>
     <string name="label_work">Work duration</string>
     <string name="label_break">Break duration</string>

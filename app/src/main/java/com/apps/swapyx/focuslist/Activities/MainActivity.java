@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String mCurrentTodoName;
     private int mNumberOfSessions;
+    private static FreeTaskListener freeTaskListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +44,11 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mToolbarMain = (Toolbar) findViewById(R.id.toolbar_main);
-        mTextNumSessions = (TextView) findViewById(R.id.textView_session);
+        mTextNumSessions = (TextView) findViewById(R.id.text_session);
 
         mNumberOfSessions = 0;
+
+        new FocusTaskChangedEvent(new ToDoItem(99999,"Free task"));
 
         mCurrentTodoName = FocusTaskChangedEvent.currentFocusTask.getToDoName();
 
@@ -53,14 +56,19 @@ public class MainActivity extends AppCompatActivity {
             setSupportActionBar(mToolbarMain);
         }
 
+        //start the timer service
         Intent timerService = new Intent(this,TimerService.class);
         startService(timerService);
 
         mSwipeAdapter = new SwipeAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSwipeAdapter);
+
         setPageChangeListener();
+
+        //set the timer fragment as default page
         mViewPager.setCurrentItem(1);
 
+        //on change in the number of sessions of the timer, update the textView and mNumberOfSessions
         TimerProperties.getInstance().setNumberOfSessionsChangeListener(new TimerProperties.NumberOfSessionsChangeListener() {
             @Override
             public void onChange(int numberOfSessions) {
@@ -69,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //on change in the Timer mode, update the color of the toolbar
         TimerFragment.setChangeToolbarColorListener(new TimerFragment.ChangeToolbarColor() {
             @Override
             public void onTimerModeChanged(TimerMode timerMode) {
@@ -104,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        //send the service to foreground when a session is active
         if (TimerProperties.getInstance().getTimerStatus() != TimerStatus.STOPPED) {
             BusProvider.getInstance().post(new StartForegroundEvent(true));
         }
@@ -113,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //Stop the timer service on closing the app
         Intent timerService = new Intent(this,TimerService.class);
         stopService(timerService);
     }
@@ -120,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (TimerProperties.getInstance().getTimerStatus() != TimerStatus.STOPPED) {
-            // move app to background
+            //move app to background if timer is active
             moveTaskToBack(true);
         }
         else{
@@ -147,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
+            //change the title of toolbar depending on the page selected
             @Override
             public void onPageSelected(int position) {
                 switch (position){
@@ -176,17 +188,29 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void onCurrentFocusTaskChecked(CurrentTaskCheckedEvent event){
-        new FocusTaskChangedEvent(new ToDoItem("Free task"));
+        new FocusTaskChangedEvent(new ToDoItem(99999,"Free task"));
         TimerProperties.getInstance().initNumberOfSessions();
-        mNumberOfSessions = 0;
-        mCurrentTodoName = "Free Task";
+        mCurrentTodoName = "Free task";
     }
 
     @Subscribe
     public void onFocusTaskChange(FocusTaskChangedEvent event){
         mCurrentTodoName = FocusTaskChangedEvent.currentFocusTask.getToDoName();
-        mViewPager.setCurrentItem(1);
+        if(FocusTaskChangedEvent.currentFocusTask.getToDoId() == 99999){
+            //if free task is selected, set the title and reset the current task position to NOT_DEFINED
+            getSupportActionBar().setTitle(mCurrentTodoName);
+            freeTaskListener.resetCurrentTaskPosition();
+        }else{
+            mViewPager.setCurrentItem(1);
+        }
         TimerProperties.getInstance().initNumberOfSessions();
-        mNumberOfSessions = 0;
+    }
+
+    public static void setFreeTaskSetListener(FreeTaskListener listener){
+        freeTaskListener = listener;
+    }
+
+    public interface FreeTaskListener{
+        void resetCurrentTaskPosition();
     }
 }

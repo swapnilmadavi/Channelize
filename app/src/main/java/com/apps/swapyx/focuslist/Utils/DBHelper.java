@@ -57,6 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /*function to return a list of all the tasks from the database according to their status */
     public List<ToDoItem> getAllTasks(int taskType) {
         List<ToDoItem> tasks = new ArrayList<>();
         ToDoItem item;
@@ -87,30 +88,37 @@ public class DBHelper extends SQLiteOpenHelper {
         if(cursor != null){
             cursor.close();
         }
-//        db.close();
         return tasks;
     }
 
+    /*function to add a task to the database and return the new rowID*/
     public long addTask(ToDoItem newItem) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME,newItem.getToDoName());
         contentValues.put(COLUMN_DUE_DATE,newItem.getToDoDueDate());
         contentValues.put(COLUMN_NOTE,newItem.getToDoNote());
-        //        db.close();
         return db.insert(TABLE_TASKS, null, contentValues);
     }
 
+    /*function to update a task in the database with given id*/
     public void updateTask(ContentValues contentValues, long id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(TABLE_TASKS,contentValues,COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
-//        db.close();
     }
 
+    /*function to update COLUMN_SECONDS_WORKED of a task in the database
+      with given id and seconds worked*/
+    public void updateTaskTime(long id, int secondsWorked) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_TASKS + " SET " + COLUMN_SECONDS_WORKED + " = ("
+                + COLUMN_SECONDS_WORKED + " + " + secondsWorked + ") WHERE " + COLUMN_ID + " = " + id);
+    }
+
+    /*function to delete a task from the database with given id*/
     public void deleteTask(long id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TASKS, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
-//        db.close();
     }
 
 }

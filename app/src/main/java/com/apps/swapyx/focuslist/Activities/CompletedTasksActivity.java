@@ -45,10 +45,9 @@ public class CompletedTasksActivity extends AppCompatActivity {
         Toolbar toolbarCompletedTasks = (Toolbar) findViewById(R.id.toolbar_task_completed);
         setSupportActionBar(toolbarCompletedTasks);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.completed_tasks);
 
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView_completed);
-        mTextEmptyList = (TextView) findViewById(R.id.textView_noTask);
+        mTextEmptyList = (TextView) findViewById(R.id.text_noTask);
 
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mDbHelper = new DBHelper(getApplicationContext());
@@ -61,6 +60,7 @@ public class CompletedTasksActivity extends AppCompatActivity {
                 DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(itemDecoration);
         setClickListeners();
+
         //Load all saved Tasks
         new LoadCompletedTasks().execute();
     }
@@ -83,26 +83,28 @@ public class CompletedTasksActivity extends AppCompatActivity {
 
     private void setClickListeners() {
         mAdapter.setCompletedItemMenuListener(new CompletedTasksAdapter.CompletedItemMenu() {
+
+            //delete task
             @Override
             public void deleteTask(int position) {
                 final int taskPosition = position;
 
                 AlertDialog.Builder deleteDialogOk = new AlertDialog.Builder(CompletedTasksActivity.this);
-                deleteDialogOk.setTitle("Delete Task?");
-                deleteDialogOk.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                deleteDialogOk.setTitle(R.string.delete_task);
+                deleteDialogOk.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mDbHelper.deleteTask(mCompletedList.get(taskPosition).getToDoId());
                         mCompletedList.remove(taskPosition);
                         mAdapter.notifyItemRemoved(taskPosition);
-                        Toast.makeText(getApplicationContext(), "Task deleted",
+                        Toast.makeText(getApplicationContext(), R.string.task_deleted,
                                 Toast.LENGTH_SHORT).show();
                         if(mCompletedList.isEmpty()){
                             setEmptyListText();
                         }
                     }
                 });
-                deleteDialogOk.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                deleteDialogOk.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -111,6 +113,7 @@ public class CompletedTasksActivity extends AppCompatActivity {
                 deleteDialogOk.show();
             }
 
+            //mark a task incomplete
             @Override
             public void markAsIncomplete(int position) {
                 mTasksUnticked = true;
@@ -120,7 +123,7 @@ public class CompletedTasksActivity extends AppCompatActivity {
                 contentValues.put(COLUMN_STATUS,0);
                 mDbHelper.updateTask(contentValues,mCompletedList.get(position).getToDoId());
 
-                //Remove the task from the ToDolist and add to CompletedList
+                //Remove the task from the ToDoList and add to CompletedList
                 mCompletedList.remove(position);
                 mAdapter.notifyItemRemoved(position);
                 if(mCompletedList.isEmpty()){

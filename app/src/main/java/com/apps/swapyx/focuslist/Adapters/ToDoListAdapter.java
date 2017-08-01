@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.apps.swapyx.focuslist.R;
 import com.apps.swapyx.focuslist.ToDoItem;
@@ -84,7 +83,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
                 }
             }
             if(dueDate.equals(getToday())){
-                holder.mTextDueDate.setText(R.string.string_today);
+                holder.mTextDueDate.setText(R.string.today);
             }else {
                 holder.mTextDueDate.setText(dueDate);
             }

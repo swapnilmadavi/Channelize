@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_view_completed"
-        android:title="@string/string_view_completed"
+        android:title="@string/view_completed"
         app:showAsAction="never"  />
     <item android:id="@+id/action_send_feedback"
         android:title="@string/send_feedback"

@@ -10,8 +10,8 @@
 
     <com.pascalwelsch.holocircularprogressbar.HoloCircularProgressBar
         android:id="@+id/circular_progressBar"
-        android:layout_width="230dp"
-        android:layout_height="230dp"
+        android:layout_width="@dimen/circular_pb_size"
+        android:layout_height="@dimen/circular_pb_size"
         app:progress_background_color="@color/colorPrimaryDark"
         app:progress_color="@color/colorWhite"
         app:stroke_width="5dp"
@@ -26,44 +26,42 @@
         app:layout_constraintVertical_bias="0.3" />
 
     <TextView
-        android:id="@+id/textView_time"
+        android:id="@+id/text_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
         android:fontFamily="sans-serif-condensed-light"
-        android:textSize="40sp"
+        android:textSize="@dimen/timer_text_size"
         android:textColor="@color/colorWhite"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="@dimen/horizontal_margin_small"
+        android:layout_marginLeft="@dimen/horizontal_margin_small"
+        android:layout_marginTop="@dimen/vertical_margin_small"
+        android:layout_marginBottom="@dimen/vertical_margin_small"
         app:layout_constraintRight_toRightOf="@+id/circular_progressBar"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="@+id/circular_progressBar"
         app:layout_constraintTop_toTopOf="@+id/circular_progressBar"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/circular_progressBar"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/circular_progressBar" />
 
     <Button
         android:id="@+id/button_start"
-        android:layout_width="150dp"
+        android:layout_width="@dimen/timer_button_size"
         android:layout_height="wrap_content"
         android:text="@string/start"
         android:textColor="@color/colorWhite"
         android:background="@drawable/start_button"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="@dimen/timer_buttons_margin"
         app:layout_constraintTop_toBottomOf="@+id/circular_progressBar"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
         android:id="@+id/button_pause"
-        android:layout_width="150dp"
+        android:layout_width="@dimen/timer_button_size"
         android:layout_height="wrap_content"
         android:text="@string/pause"
         android:textColor="@color/colorWhite"
         android:background="@drawable/transparent_button"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="@dimen/timer_buttons_margin"
         app:layout_constraintTop_toBottomOf="@+id/circular_progressBar"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -74,9 +72,7 @@
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="180dp" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/button_resume"
@@ -85,10 +81,9 @@
         android:text="@string/resume"
         android:textColor="@color/colorWhite"
         app:backgroundTint="#00e676"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="@dimen/timer_buttons_margin"
         app:layout_constraintTop_toBottomOf="@+id/circular_progressBar"
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        tools:layout_editor_absoluteX="92dp" />
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/button_stop"
@@ -97,9 +92,8 @@
         android:text="@string/stop"
         android:textColor="@color/colorWhite"
         app:backgroundTint="#ef5350"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="@dimen/timer_buttons_margin"
         app:layout_constraintTop_toBottomOf="@+id/circular_progressBar"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        tools:layout_editor_absoluteX="180dp" />
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical" />
 
 </android.support.constraint.ConstraintLayout>
