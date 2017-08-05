@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="circular_pb_size">384dp</dimen>
+    <dimen name="timer_button_size">180dp</dimen>
+    <dimen name="timer_text_size">68sp</dimen>
+</resources>
