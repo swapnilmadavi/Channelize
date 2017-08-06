@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.apps.swapyx.focuslist.Activities.AboutActivity;
 import com.apps.swapyx.focuslist.Activities.CompletedTasksActivity;
 import com.apps.swapyx.focuslist.Activities.MainActivity;
+import com.apps.swapyx.focuslist.Activities.SettingsActivity;
 import com.apps.swapyx.focuslist.Activities.TaskActivity;
 import com.apps.swapyx.focuslist.Adapters.ToDoListAdapter;
 import com.apps.swapyx.focuslist.Events.CurrentTaskEditedEvent;
@@ -255,8 +256,13 @@ public class TaskListFragment extends Fragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_view_completed) {
             // Launch Completed Tasks activity
-            Intent completedTasksIntent = new Intent(getActivity(),CompletedTasksActivity.class);
-            startActivityForResult(completedTasksIntent,REQUEST_CODE_COMPLETED);
+            Intent completedTasksIntent = new Intent(getActivity(), CompletedTasksActivity.class);
+            startActivityForResult(completedTasksIntent, REQUEST_CODE_COMPLETED);
+            return true;
+        }else if (id == R.id.action_settings) {
+            // Launch settings activity
+            Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }else if (id == R.id.action_about){
             // Launch about activity
@@ -369,6 +375,8 @@ public class TaskListFragment extends Fragment {
                 //Remove the task from the ToDoList and add to CompletedList
                 mToDoList.remove(position);
                 mAdapter.notifyItemRemoved(position);
+                Toast.makeText(getActivity().getApplicationContext(), R.string.marked_complete,
+                        Toast.LENGTH_SHORT).show();
                 if(mToDoList.isEmpty()){
                     setEmptyListText();
                 }

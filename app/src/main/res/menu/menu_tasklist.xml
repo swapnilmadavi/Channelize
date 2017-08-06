@@ -6,6 +6,9 @@
         android:id="@+id/action_view_completed"
         android:title="@string/view_completed"
         app:showAsAction="never"  />
+    <item android:id="@+id/action_settings"
+        android:title="@string/title_settings"
+        app:showAsAction="never" />
     <item android:id="@+id/action_send_feedback"
         android:title="@string/send_feedback"
         app:showAsAction="never" />

@@ -126,6 +126,8 @@ public class CompletedTasksActivity extends AppCompatActivity {
                 //Remove the task from the ToDoList and add to CompletedList
                 mCompletedList.remove(position);
                 mAdapter.notifyItemRemoved(position);
+                Toast.makeText(getApplicationContext(), R.string.marked_pending,
+                        Toast.LENGTH_SHORT).show();
                 if(mCompletedList.isEmpty()){
                     setEmptyListText();
                 }

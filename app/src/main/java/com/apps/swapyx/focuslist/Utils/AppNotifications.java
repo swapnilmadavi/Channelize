@@ -69,7 +69,7 @@ public class AppNotifications {
     private static CharSequence getNotificationContentTitle(TimerMode timerMode, Context context) {
         CharSequence message;
         if(timerMode == TimerMode.WORK){
-            message =  context.getString(R.string.work_over);
+            message =  context.getString(R.string.work_session_complete);
         }else{
             message = context.getString(R.string.break_over);
         }

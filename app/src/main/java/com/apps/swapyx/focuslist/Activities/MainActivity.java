@@ -1,7 +1,9 @@
 package com.apps.swapyx.focuslist.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
         mNumberOfSessions = 0;
 
+        PreferenceManager.setDefaultValues(this, R.xml.app_prefs, false);
+
         new FocusTaskChangedEvent(new ToDoItem(99999,"Free task"));
 
         mCurrentTodoName = FocusTaskChangedEvent.currentFocusTask.getToDoName();
@@ -65,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         setPageChangeListener();
 
-        //set the timer fragment as default page
-        mViewPager.setCurrentItem(1);
+        /*//set the timer fragment as default page
+        mViewPager.setCurrentItem(1);*/
 
         //on change in the number of sessions of the timer, update the textView and mNumberOfSessions
         TimerProperties.getInstance().setNumberOfSessionsChangeListener(new TimerProperties.NumberOfSessionsChangeListener() {
@@ -88,7 +92,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        showTutorial();
     }
+
+    private void showTutorial()
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean firstRun = prefs.getBoolean("pref_first_run", true);
+
+        if(firstRun)
+        {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("pref_first_run", false);
+            editor.apply();
+
+            Intent intent = new Intent(this, IntroActivity.class);
+            this.startActivity(intent);
+        }
+    }
+
 
     @Override
     protected void onStart() {

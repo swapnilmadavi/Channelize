@@ -10,8 +10,8 @@
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#757575</color>
     <color name="colorDivider">#bdbdbd</color>
-    <color name="colorBreak"> #ff9800</color>
-    <color name="colorBreakDark">#f57C00</color>
+    <color name="colorBreak"> #ffa726</color>
+    <color name="colorBreakDark">#c77800</color>
     <color name="colorCardBackground">#fafafa</color>
     <color name="colorBackground">#eeeeee</color>
     <color name="colorButtonResume">#00e676</color>

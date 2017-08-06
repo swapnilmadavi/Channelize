@@ -30,7 +30,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:fontFamily="sans-serif-condensed-light"
         android:textSize="@dimen/timer_text_size"
         android:textColor="@color/colorWhite"
         android:layout_marginRight="@dimen/horizontal_margin_small"

@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apps.swapyx.focuslist.Activities.AboutActivity;
 import com.apps.swapyx.focuslist.Events.CurrentTaskCheckedEvent;
@@ -108,7 +110,7 @@ public class TimerFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        PreferenceManager.setDefaultValues(getActivity(), R.xml.app_prefs, false);
+//        PreferenceManager.setDefaultValues(getActivity(), R.xml.app_prefs, false);
 
         sPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sPref.registerOnSharedPreferenceChangeListener(this);
@@ -196,21 +198,18 @@ public class TimerFragment extends Fragment implements
             Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
             startActivity(settingsIntent);
             return true;
-        }else if (id == R.id.action_about){
-            // Launch about activity
-            Intent aboutIntent = new Intent(getActivity(), AboutActivity.class);
-            startActivity(aboutIntent);
-            return true;
         }else if (id == R.id.action_free_task){
             // Set Free task as current task
-            if(!mIsTimerActive){
-                BusProvider.getInstance()
-                        .post(new FocusTaskChangedEvent(new ToDoItem(99999,"Free task")));
-                Log.d("Free task","posted");
+            if(FocusTaskChangedEvent.currentFocusTask.getToDoId() == 99999){
+                Toast.makeText(getActivity(),"Free task already selected",Toast.LENGTH_SHORT).show();
             }else {
-                Snackbar snackbar = Snackbar
-                        .make(view, R.string.stop_ongoing_task, Snackbar.LENGTH_SHORT);
-                snackbar.show();
+                if(!mIsTimerActive){
+                    BusProvider.getInstance()
+                            .post(new FocusTaskChangedEvent(new ToDoItem(99999,"Free task")));
+                    Log.d("Free task","posted");
+                }else {
+                    Toast.makeText(getActivity(),R.string.stop_ongoing_task,Toast.LENGTH_SHORT).show();
+                }
             }
 
             return true;
@@ -239,6 +238,10 @@ public class TimerFragment extends Fragment implements
         mButtonPause = (Button)view.findViewById(R.id.button_pause);
         mButtonResume = (Button)view.findViewById(R.id.button_resume);
         mButtonStop = (Button)view.findViewById(R.id.button_stop);
+
+        if (mTextViewTimer != null) {
+            mTextViewTimer.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf"));
+        }
 
         updateTimerLabel((int) TimeUnit.MINUTES.toSeconds(timerDuration));
     }
@@ -527,7 +530,7 @@ public class TimerFragment extends Fragment implements
 
     private void showBreakDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.work_over);
+        builder.setTitle(R.string.work_session_complete);
 
         if((TimerProperties.getInstance().getNumberOfSessions() %
                 appPreferences.getSessionsBeforeLongBreak()) == 0){
