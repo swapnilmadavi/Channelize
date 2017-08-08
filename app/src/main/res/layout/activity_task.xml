@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context=".Activities.TaskActivity">
+    tools:context="com.apps.swapyx.channelize.Activities.TaskActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_task"

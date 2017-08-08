@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Focuslist</string>
+    <string name="app_name">Channelize</string>
 
     <!-- TaskActivity Strings -->
     <string name="title_activity_task">TaskActivity</string>

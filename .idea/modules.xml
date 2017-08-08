@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Focuslist.iml" filepath="$PROJECT_DIR$/Focuslist.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Channelize.iml" filepath="$PROJECT_DIR$/Channelize.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/circularProgressBar/circularProgressBar.iml" filepath="$PROJECT_DIR$/libraries/circularProgressBar/circularProgressBar.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
