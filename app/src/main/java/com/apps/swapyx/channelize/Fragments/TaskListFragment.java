@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -68,12 +69,10 @@ import static com.apps.swapyx.channelize.Utils.DBHelper.INCOMPLETE;
  * A simple {@link Fragment} subclass.
  */
 public class TaskListFragment extends Fragment {
+    //Constants
     public static final int REQUEST_CODE_INSERT = 0;
     public static final int REQUEST_CODE_EDIT = 1;
     private static final int REQUEST_CODE_COMPLETED = 2;
-
-    private static final String STRING_STOP_TASK_FIRST = "Stop task first";
-    private static final String STRING_ANOTHER_TASK_ACTIVE = "Another task active";
 
     private TextView mTextEmptyList;
     private RecyclerView mRecyclerView;
@@ -88,10 +87,10 @@ public class TaskListFragment extends Fragment {
     // Load Settings
     private SharedPreferences sPref;
 
+    //Task list variables
     private int toBeEditedPosition;
     private int mCurrentFocusTaskPosition;
     private static final int NOT_DEFINED = 9999;
-
     private boolean mIsListEmpty;
     private boolean mCurrentTaskChecked;
     private boolean mTasksUnTicked = false;
@@ -269,6 +268,11 @@ public class TaskListFragment extends Fragment {
             Intent aboutIntent = new Intent(getActivity(), AboutActivity.class);
             startActivity(aboutIntent);
             return true;
+        }else if (id == R.id.action_rate_app){
+            rateThisApp();
+        }else if (id == R.id.action_send_feedback) {
+            sendFeedback();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -420,6 +424,26 @@ public class TaskListFragment extends Fragment {
         LocalBroadcastManager.getInstance(getActivity())
                 .registerReceiver((mBroadcastReceiver), filter);
 
+    }
+
+    private void rateThisApp() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=" + getActivity().getPackageName())));
+        } catch (android.content.ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + getActivity().getPackageName())));
+        }
+    }
+
+    private void sendFeedback() {
+        Intent feedback = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:dev.swapyx@gmail.com"));
+        feedback.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Channelize app");
+        try {
+            startActivity(Intent.createChooser(feedback, "Complete action using"));
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(getActivity(), "No email client installed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void onWorkSessionFinished(int secondsWorked) {

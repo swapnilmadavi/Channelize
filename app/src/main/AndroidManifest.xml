@@ -73,7 +73,6 @@
             android:name="com.apps.swapyx.channelize.TimerService"
             android:exported="false" />
 
-
     </application>
 
 </manifest>

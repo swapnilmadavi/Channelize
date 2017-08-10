@@ -61,6 +61,7 @@
     <string name="label_sound">Sound</string>
     <string name="label_vibrate">Vibration</string>
     <string name="label_screen_on">Keep screen ON</string>
+    <string name="label_resume_app">Resume app on session end</string>
 
     <!-- Preference Keys -->
     <string name="key_work">pref_work</string>
@@ -72,6 +73,7 @@
     <string name="key_sound">pref_sound</string>
     <string name="key_vibrate">"pref_vibrate</string>
     <string name="key_screen_on">"pref_screen_on</string>
+    <string name="key_resume_app">"pref_resume_app"</string>
 
     <!-- Preference Measurements -->
     <string name="minutes">minutes</string>
@@ -84,5 +86,6 @@
     <string name="developer">Developer</string>
     <string name="developer_name">Swapnil Madavi</string>
     <string name="licenses_heading">Open Source Licenses</string>
+    <string name="rate_app">Rate this app</string>
 
 </resources>

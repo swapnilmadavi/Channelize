@@ -60,6 +60,11 @@
             android:key="@string/key_vibrate"
             android:title="@string/label_vibrate"
             android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:key="@string/key_resume_app"
+            android:title="@string/label_resume_app"
+            android:defaultValue="true"/>
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -30,6 +30,7 @@ import static android.graphics.Color.RED;
 import static android.graphics.Color.BLACK;
 
 public class TaskActivity extends AppCompatActivity {
+    //Constants
     public static final String TASK_NAME = "originalName";
     public static final String TASK_DUE_DATE = "originalDueDate";
     public static final String TASK_NOTE = "originalNote";

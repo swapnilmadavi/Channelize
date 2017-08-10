@@ -9,6 +9,9 @@
     <item android:id="@+id/action_settings"
         android:title="@string/title_settings"
         app:showAsAction="never" />
+    <item android:id="@+id/action_rate_app"
+        android:title="@string/rate_app"
+        app:showAsAction="never" />
     <item android:id="@+id/action_send_feedback"
         android:title="@string/send_feedback"
         app:showAsAction="never" />

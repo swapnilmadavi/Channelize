@@ -16,6 +16,8 @@ public class AppPreferences {
     private static final String NOTIFICATION_SOUND = "pref_sound";
     private static final String NOTIFICATION_VIBRATE = "pref_vibrate";
     private static final String KEEP_SCREEN_ON = "pref_screen_on";
+    private static final String RESUME_APP = "pref_resume_app";
+
     private SharedPreferences sharedPreferences;
 
     public AppPreferences(SharedPreferences sPref) {
@@ -56,5 +58,9 @@ public class AppPreferences {
 
     public boolean keepScreenON() {
         return sharedPreferences.getBoolean(KEEP_SCREEN_ON,false);
+    }
+
+    public boolean resumeAppOnSessionEnd() {
+        return sharedPreferences.getBoolean(RESUME_APP,true);
     }
 }

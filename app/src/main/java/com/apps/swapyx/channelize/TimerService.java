@@ -40,6 +40,7 @@ import static android.app.AlarmManager.ELAPSED_REALTIME_WAKEUP;
  */
 
 public class TimerService extends Service{
+    //Constants
     private static final String TAG = TimerService.class.getSimpleName();
     private static final int MESSAGE_TIMER_UPDATE = 0 ;
     private static final int NOTIFICATION_ID = 1;
@@ -51,7 +52,7 @@ public class TimerService extends Service{
             "com.apps.swapyx.channelize.ACTION_WORK_MODE_STOPPED";
     public static final String SECONDS_WORKED = "secondsWorked";
 
-
+    //Timer variables
     private long countdownDuration;
     private long timeRemainingOnPause;
     private long timeRemainingOnStop;
@@ -252,11 +253,14 @@ public class TimerService extends Service{
                 stopForeground(true);
                 TimerProperties.getInstance().setTimerStatus(TimerStatus.STOPPED);
 
-                //Resume the app when alarm goes OFF
-                Intent resumeIntent = new Intent(context, MainActivity.class);
-                resumeIntent.setFlags(Intent.FLAG_FROM_BACKGROUND | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |
-                        Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(resumeIntent);
+                if(appPreferences.resumeAppOnSessionEnd()){
+                    //Resume the app when alarm goes OFF
+                    Intent resumeIntent = new Intent(context, MainActivity.class);
+                    resumeIntent.setFlags(Intent.FLAG_FROM_BACKGROUND | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(resumeIntent);
+                }
+
                 Log.d(TAG, "Countdown finished");
                 unregisterReceiver(mAlarmReceiver);
             }

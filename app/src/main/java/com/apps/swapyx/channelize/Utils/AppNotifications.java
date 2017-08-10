@@ -26,7 +26,7 @@ public class AppNotifications {
 
     public static Notification createForegroundNotifications(Context context) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setSmallIcon(R.mipmap.ic_launcher)
+        mBuilder.setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(FocusTaskChangedEvent.currentFocusTask.getToDoName());
 
@@ -41,7 +41,7 @@ public class AppNotifications {
 
     public static Notification createFinishNotification(Context context, TimerMode timerMode, boolean sound, boolean vibrate) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setSmallIcon(R.mipmap.ic_launcher)
+        mBuilder.setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(getNotificationContentTitle(timerMode,context))
                 .setContentText(getNotificationContentText(timerMode,context))
                 .setAutoCancel(true);

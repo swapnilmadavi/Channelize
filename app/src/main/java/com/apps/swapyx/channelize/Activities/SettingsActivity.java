@@ -10,14 +10,12 @@ import com.apps.swapyx.channelize.Fragments.SettingsFragment;
 import com.apps.swapyx.channelize.R;
 
 public class SettingsActivity extends AppCompatActivity {
-    private Toolbar settingsToolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        settingsToolbar = (Toolbar) findViewById(R.id.toolbar_settings);
-        setSupportActionBar(settingsToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getFragmentManager().beginTransaction().add(R.id.container_settings, new SettingsFragment()).commit();

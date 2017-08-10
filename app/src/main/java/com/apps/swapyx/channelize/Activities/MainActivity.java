@@ -48,9 +48,6 @@ public class MainActivity extends AppCompatActivity {
         mToolbarMain = (Toolbar) findViewById(R.id.toolbar_main);
         mTextNumSessions = (TextView) findViewById(R.id.text_session);
 
-        //TimerProperties.getInstance().initNumberOfSessions();
-        //mNumberOfSessions = 0;
-
         PreferenceManager.setDefaultValues(this, R.xml.app_prefs, false);
 
         new FocusTaskChangedEvent(new ToDoItem(99999,"Free task"));
@@ -94,10 +91,13 @@ public class MainActivity extends AppCompatActivity {
         //initialize the number of sessions to 0
         TimerProperties.getInstance().initNumberOfSessions();
 
-        showTutorial();
+        showIntro();
+
+        mTextNumSessions.setText("");
     }
 
-    private void showTutorial()
+    /*Displays Intro on first run*/
+    private void showIntro()
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean firstRun = prefs.getBoolean("pref_first_run", true);

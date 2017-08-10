@@ -64,32 +64,33 @@ import static com.apps.swapyx.channelize.TimerMode.WORK;
  */
 public class TimerFragment extends Fragment implements
         SharedPreferences.OnSharedPreferenceChangeListener{
-
+    //Constants
     public static final String TAG = TimerFragment.class.getSimpleName();
     private static final int NOTIFICATION_ID = 2;
-
-    private int timerDuration;
-    private TimerMode mTimerMode;
 
     private View view;
     private TextView mTextViewTimer;
     private HoloCircularProgressBar mCircularProgressBar;
     private Button mButtonStart, mButtonStop, mButtonPause, mButtonResume;
+    private AlertDialog mAlertDialog;
 
     // Load Settings
     private AppPreferences appPreferences;
     private SharedPreferences sPref;
 
-    private boolean mIsTimerActive;
-    private boolean timerDurationChanged = false;
-    private BroadcastReceiver mBroadcastReceiver;
-    private AlertDialog mAlertDialog;
+    //Timer variables
+    private int timerDuration;
+    private TimerMode mTimerMode;
+    private boolean mIsWorkActive;
     private int mPreviousRingerMode;
     private boolean mPreviousWifiMode;
     private boolean ringerModeChanged = false;
     private boolean wifiChanged = false;
-    private static ChangeToolbarColor listener;
     private boolean screenKeptOn = false;
+
+    private BroadcastReceiver mBroadcastReceiver;
+    private static ChangeToolbarColor listener;
+
 
     public interface ChangeToolbarColor{
         void onTimerModeChanged(TimerMode mTimerMode);
@@ -117,7 +118,7 @@ public class TimerFragment extends Fragment implements
         setupBroadcastReceiver();
 
         timerDuration = appPreferences.getWorkDuration();
-        mIsTimerActive = false;
+        mIsWorkActive = false;
     }
 
 
@@ -155,7 +156,7 @@ public class TimerFragment extends Fragment implements
     public void onStop() {
         super.onStop();
         BusProvider.getInstance().unregister(this);
-        if(mTimerMode == WORK && mIsTimerActive && FocusTaskChangedEvent.currentFocusTask.getToDoId()!=99999){
+        if(mTimerMode == WORK && mIsWorkActive && FocusTaskChangedEvent.currentFocusTask.getToDoId()!=99999){
             SharedPreferences.Editor ed = sPref.edit();
             ed.putBoolean("AppDestroyedDuringWork", true);
             ed.commit();
@@ -169,7 +170,7 @@ public class TimerFragment extends Fragment implements
             mAlertDialog.dismiss();
         }
         removeCompletionNotification();
-        if(mIsTimerActive && mTimerMode == WORK){
+        if(mIsWorkActive){
             if(ringerModeChanged){
                 restoreSound();
             }
@@ -205,7 +206,7 @@ public class TimerFragment extends Fragment implements
             if(FocusTaskChangedEvent.currentFocusTask.getToDoId() == 99999){
                 Toast.makeText(getActivity(),"Free task already selected",Toast.LENGTH_SHORT).show();
             }else {
-                if(!mIsTimerActive){
+                if(!mIsWorkActive){
                     BusProvider.getInstance()
                             .post(new FocusTaskChangedEvent(new ToDoItem(99999,"Free task")));
                     Log.d("Free task","posted");
@@ -257,22 +258,21 @@ public class TimerFragment extends Fragment implements
         mButtonResume.setEnabled(false);
         mButtonStop.setVisibility(View.INVISIBLE);
         mButtonStop.setEnabled(false);
-        if(screenKeptOn){
-            clearScreenOnFlag();
-            screenKeptOn = false;
-        }
+    }
+
+    private void loadWorkUI(){
+        mButtonStart.setVisibility(View.GONE);
+        mButtonStart.setEnabled(false);
+        mButtonPause.setVisibility(View.VISIBLE);
+        mButtonPause.setEnabled(true);
     }
 
     private void setButtonListeners() {
         mButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIsTimerActive = true;
+                loadWorkUI();
                 startTimer(WORK);
-                mButtonStart.setVisibility(View.GONE);
-                mButtonStart.setEnabled(false);
-                mButtonPause.setVisibility(View.VISIBLE);
-                mButtonPause.setEnabled(true);
             }
         });
 
@@ -308,24 +308,39 @@ public class TimerFragment extends Fragment implements
         mTimerMode = timerMode;
         switch (timerMode){
             case WORK:
+                mIsWorkActive = true;
+                timerDuration = appPreferences.getWorkDuration();
                 BusProvider.getInstance().post(new StartTimerEvent(timerMode));
+                listener.onTimerModeChanged(WORK);
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+                mCircularProgressBar.setProgressBackgroundColor(ContextCompat.getColor(getActivity(),R.color.colorPrimaryDark));
                 if(appPreferences.getDisableSoundAndVibration()){
                     disableSoundAndVibration();
                 }
                 if(appPreferences.getDisableWifi()){
                     disableWifi();
                 }
-                if(appPreferences.keepScreenON()){
-                    getActivity().getWindow().addFlags(FLAG_KEEP_SCREEN_ON);
-                    screenKeptOn = true;
-                }
                 break;
             case BREAK:
+                timerDuration = appPreferences.getBreakDuration();
                 BusProvider.getInstance().post(new StartTimerEvent(timerMode));
+                listener.onTimerModeChanged(BREAK);
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.colorBreak));
+                mCircularProgressBar.setProgressBackgroundColor(ContextCompat.getColor(getActivity()
+                        ,R.color.colorBreakDark));
                 break;
             case LONG_BREAK:
+                timerDuration = appPreferences.getLongBreakDuration();
                 BusProvider.getInstance().post(new StartTimerEvent(timerMode));
+                listener.onTimerModeChanged(BREAK);
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.colorBreak));
+                mCircularProgressBar.setProgressBackgroundColor(ContextCompat.getColor(getActivity()
+                        ,R.color.colorBreakDark));
                 break;
+        }
+        if(appPreferences.keepScreenON()){
+            getActivity().getWindow().addFlags(FLAG_KEEP_SCREEN_ON);
+            screenKeptOn = true;
         }
     }
 
@@ -351,14 +366,10 @@ public class TimerFragment extends Fragment implements
     }
 
     private void stopTimer(){
-        mIsTimerActive = false;
+        mIsWorkActive = false;
         BusProvider.getInstance().post(new StopTimerEvent());
         initVisibility();
-        if(timerDurationChanged) {
-            timerDuration = appPreferences.getWorkDuration();
-            timerDurationChanged = false;
-        }
-        updateTimerLabel((int) TimeUnit.MINUTES.toSeconds(timerDuration));
+        updateLabelToWork();
         if(ringerModeChanged){
             restoreSound();
             ringerModeChanged = false;
@@ -366,6 +377,10 @@ public class TimerFragment extends Fragment implements
         if(wifiChanged){
             restoreWifi();
             wifiChanged = false;
+        }
+        if(screenKeptOn){
+            clearScreenOnFlag();
+            screenKeptOn = false;
         }
     }
 
@@ -407,17 +422,13 @@ public class TimerFragment extends Fragment implements
 
 
     private void loadBreakUI() {
-        view.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.colorBreak));
-        mCircularProgressBar.setProgressBackgroundColor(ContextCompat.getColor(getActivity()
-                ,R.color.colorBreakDark));
-        listener.onTimerModeChanged(BREAK);
         mButtonStart.setVisibility(View.GONE);
         mButtonStart.setEnabled(false);
         mButtonResume.setVisibility(View.INVISIBLE);
         mButtonResume.setEnabled(false);
         mButtonStop.setVisibility(View.INVISIBLE);
         mButtonStop.setEnabled(false);
-        mButtonPause.setText(android.R.string.cancel);
+        mButtonPause.setText(R.string.skip);
         mButtonPause.setVisibility(View.VISIBLE);
         mButtonPause.setEnabled(true);
     }
@@ -437,6 +448,10 @@ public class TimerFragment extends Fragment implements
         if(wifiChanged){
             restoreWifi();
             wifiChanged = false;
+        }
+        if(screenKeptOn){
+            clearScreenOnFlag();
+            screenKeptOn = false;
         }
         showAlertDialog(mTimerMode);
     }
@@ -477,8 +492,10 @@ public class TimerFragment extends Fragment implements
     }
 
     private void showAlertDialog(TimerMode timerMode) {
+        initVisibility();
         switch (timerMode){
             case WORK:
+                mIsWorkActive = false;
                 TimerProperties.getInstance().incrementNumberOfSessions();
                 showBreakDialog();
                 break;
@@ -494,6 +511,7 @@ public class TimerFragment extends Fragment implements
     }
 
     private void showWorkDialog() {
+        mButtonPause.setText(R.string.pause);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.break_over)
                 .setMessage(R.string.resume_work)
@@ -501,12 +519,7 @@ public class TimerFragment extends Fragment implements
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         removeCompletionNotification();
-                        view.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
-                        mCircularProgressBar.setProgressBackgroundColor(ContextCompat.getColor(getActivity()
-                                ,R.color.colorPrimaryDark));
-                        listener.onTimerModeChanged(WORK);
-                        timerDuration = appPreferences.getWorkDuration();
-                        mButtonPause.setText(R.string.pause);
+                        loadWorkUI();
                         startTimer(WORK);
                     }
                 })
@@ -514,13 +527,6 @@ public class TimerFragment extends Fragment implements
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         removeCompletionNotification();
-                        view.setBackgroundColor(ContextCompat.getColor(getActivity()
-                                ,R.color.colorPrimary));
-                        mCircularProgressBar.setProgressBackgroundColor(ContextCompat.getColor(getActivity()
-                                ,R.color.colorPrimaryDark));
-                        listener.onTimerModeChanged(WORK);
-                        initVisibility();
-                        mButtonPause.setText(R.string.pause);
                         updateLabelToWork();
                     }
                 });
@@ -541,7 +547,6 @@ public class TimerFragment extends Fragment implements
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             removeCompletionNotification();
-                            timerDuration = appPreferences.getLongBreakDuration();
                             loadBreakUI();
                             startTimer(LONG_BREAK);
                         }
@@ -552,7 +557,6 @@ public class TimerFragment extends Fragment implements
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             removeCompletionNotification();
-                            timerDuration = appPreferences.getBreakDuration();
                             loadBreakUI();
                             startTimer(BREAK);
                         }
@@ -563,6 +567,7 @@ public class TimerFragment extends Fragment implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeCompletionNotification();
+                loadWorkUI();
                 startTimer(WORK);
             }
         })
@@ -570,7 +575,6 @@ public class TimerFragment extends Fragment implements
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         removeCompletionNotification();
-                        initVisibility();
                         updateLabelToWork();
                     }
                 });
@@ -605,12 +609,8 @@ public class TimerFragment extends Fragment implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if ( key.equals("pref_work") ) {
             Log.i(TAG,"Focus Duration Changed");
-            if(!mIsTimerActive){
-                timerDuration = appPreferences.getWorkDuration();
-                updateTimerLabel((int) TimeUnit.MINUTES.toSeconds(timerDuration));
-            }
-            else{
-                timerDurationChanged = true;
+            if(!mIsWorkActive){
+                updateLabelToWork();
             }
         }
     }
