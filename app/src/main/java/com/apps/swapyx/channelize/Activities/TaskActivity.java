@@ -162,7 +162,7 @@ public class TaskActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
             if(editedName.equals("")){
-                Toast.makeText(getApplicationContext(), "Enter a task first", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.enter_task_first, Toast.LENGTH_SHORT).show();
             }else{
                 if(request.equals(DBHelper.DML_UPDATE)){
                     if(changesMade()){
@@ -182,14 +182,14 @@ public class TaskActivity extends AppCompatActivity {
         }else if (id == android.R.id.home){
             if(changesMade()){
                 AlertDialog.Builder discardDialogOk = new AlertDialog.Builder(this);
-                discardDialogOk.setTitle("Discard changes?");
-                discardDialogOk.setPositiveButton("DISCARD", new DialogInterface.OnClickListener() {
+                discardDialogOk.setTitle(R.string.discard_changes);
+                discardDialogOk.setPositiveButton(R.string.dicard, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         NavUtils.navigateUpFromSameTask(TaskActivity.this);
                     }
                 });
-                discardDialogOk.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                discardDialogOk.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 

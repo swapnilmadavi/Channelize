@@ -87,5 +87,8 @@
     <string name="developer_name">Swapnil Madavi</string>
     <string name="licenses_heading">Open Source Licenses</string>
     <string name="rate_app">Rate this app</string>
+    <string name="dicard">DISCARD</string>
+    <string name="discard_changes">Discard changes?</string>
+    <string name="enter_task_first">Enter a task first</string>
 
 </resources>
