@@ -1,0 +1,41 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:2:1-12:12
+	package
+		ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:2:11-61
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml
+	android:versionName
+		ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:6:5-30
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:4:5-51
+	xmlns:android
+		ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:3:5-63
+	android:versionCode
+		ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:5:5-28
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml
+uses-sdk
+ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:9:5-10:42
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:9:5-10:42
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:9:5-10:42
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:9:5-10:42
+INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:9:5-10:42
+	android:targetSdkVersion
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml
+		ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:9:5-10:42
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml
+	tools:ignore
+		ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:10:9-39
+	android:minSdkVersion
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml
+		ADDED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml:9:5-10:42
+		INJECTED from /home/swapyx/AndroidStudioProjects/Channelize/libraries/circularProgressBar/AndroidManifest.xml

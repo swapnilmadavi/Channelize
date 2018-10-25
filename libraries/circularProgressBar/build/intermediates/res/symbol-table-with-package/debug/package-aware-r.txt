@@ -1,0 +1,12 @@
+com.pascalwelsch.holocircularprogressbar
+attr circularProgressBarStyle
+attr marker_progress
+attr marker_visible
+attr progress
+attr progress_background_color
+attr progress_color
+attr stroke_width
+attr thumb_visible
+style CircularProgressBar
+style CircularProgressBarLight
+styleable HoloCircularProgressBar android_gravity marker_progress marker_visible progress progress_background_color progress_color stroke_width thumb_visible

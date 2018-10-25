@@ -7,8 +7,6 @@
 
     <!-- only important for Eclipse. Android Studio overrides this with the build.gradle -->
     <uses-sdk
-        android:minSdkVersion="7"
-        android:targetSdkVersion="19"
         tools:ignore="GradleOverrides" />
 
 </manifest>

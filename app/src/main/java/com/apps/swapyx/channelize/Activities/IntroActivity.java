@@ -2,7 +2,7 @@ package com.apps.swapyx.channelize.Activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.apps.swapyx.channelize.R;
 import com.github.paolorotolo.appintro.AppIntro2;
