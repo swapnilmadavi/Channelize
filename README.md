@@ -1,4 +1,5 @@
-# <h1 align="center">Channelize</h1>
+# <h1 align="center">\[ 🚧 Work in progress 🚧 \] Channelize</h1>
+<p align="center">Rewriting Channelize using <a href="https://developer.android.com/topic/libraries/architecture/">Android Architecture Components</a>, in Kotlin.</p>
 <p align="center"><img src="https://github.com/swapyx/Channelize/blob/master/app/src/main/ic_launcher_channelize-web.png" width="100" height="100"/></p>
 <p align="center"><b>A FREE time-management app with focus timer and task list.</b></p>
 
