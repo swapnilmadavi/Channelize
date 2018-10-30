@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.apps.swapyx.channelize.Events.FocusTaskChangedEvent;
 import com.apps.swapyx.channelize.Events.StartForegroundEvent;
+import com.apps.swapyx.channelize.Fragments.WIPNoticeDialog;
 import com.apps.swapyx.channelize.Fragments.TimerFragment;
 import com.apps.swapyx.channelize.Utils.BusProvider;
 import com.apps.swapyx.channelize.Adapters.SwipeAdapter;
@@ -93,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
         showIntro();
 
+        showWIPNoticeDialog();
+
         mTextNumSessions.setText("");
     }
 
@@ -113,6 +117,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*Displays WIP notice on first run*/
+    private void showWIPNoticeDialog() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean showWIPNotice = prefs.getBoolean("pref_show_wip_notice", true);
+
+        if(showWIPNotice) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("pref_show_wip_notice", false);
+            editor.apply();
+
+            // Create an instance of the dialog fragment and show it
+            DialogFragment dialog = new WIPNoticeDialog();
+            dialog.show(getSupportFragmentManager(), "WIPNoticeDialogFragment");
+        }
+    }
 
     @Override
     protected void onStart() {

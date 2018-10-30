@@ -91,4 +91,11 @@
     <string name="discard_changes">Discard changes?</string>
     <string name="enter_task_first">Enter a task first</string>
 
+    <!--Update Dialog-->
+    <string name="dialog_wip_notice">After your abiding support for this app for over a year, I have began working on a complete overhaul to fix some major compatibility issues caused by Android updates and policy changes.
+
+        \n\nI am listening to you, carefully going through all reviews and planning future updates which will include all possible suggestions given by you. So, if you have any suggestions, you can write to me via \"Send feedback\" option in the app.
+    </string>
+    <string name="dialog_wip_title">Thanks for using Channelize!</string>
+
 </resources>

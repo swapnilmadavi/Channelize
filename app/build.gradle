@@ -33,7 +33,7 @@ dependencies {
     implementation 'com.pavelsikun:material-seekbar-preference:2.3.0+'
     implementation "androidx.legacy:legacy-support-v4:$rootProject.supportLibraryVersion"
     implementation "com.google.android.material:material:$rootProject.supportLibraryVersion"
-    implementation 'com.github.apl-devs:appintro:v4.2.2'
+    implementation 'com.github.paolorotolo:appintro:v5.1.0'
 
     // Testing dependencies
     //androidTestImplementation "androidx.test.espresso:espresso-contrib:$rootProject.espressoVersion"
