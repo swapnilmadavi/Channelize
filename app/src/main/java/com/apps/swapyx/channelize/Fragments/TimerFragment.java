@@ -469,7 +469,7 @@ public class TimerFragment extends Fragment implements
         //noinspection deprecation
         PowerManager.WakeLock wl = powerManager.newWakeLock(
                 SCREEN_BRIGHT_WAKE_LOCK | ACQUIRE_CAUSES_WAKEUP | ON_AFTER_RELEASE,
-                "wake screen lock"
+                "channelize: wake screen lock"
         );
 
         wl.acquire();
